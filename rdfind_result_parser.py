@@ -18,25 +18,22 @@ def main():
     BASEDIR, RDFIND_RESULTS = set_env()
 
     with open(RDFIND_RESULTS, "r") as file_in:
-        num_main = 0
-        num_dups = 0
+        block = []
+
         for line in file_in:
             line = line.lstrip()
             if line.startswith("#"):
                 continue
 
             line = line.split()
-            if line[0] == "DUPTYPE_FIRST_OCCURRENCE":
-                num_main += 1
-                if num_dups == 0:  # first line
-                    print(f"{num_main:04d}{line[7]}", end="")
-                else:
-                    print(f" :: {num_dups}\n{num_main:04d} {line[7]}", end="")
-                    num_dups = 0
-            else:
-                num_dups += 1
+            if line[0] == "DUPTYPE_FIRST_OCCURRENCE" and len(block) != 0:
+                process_block(block)
+                block = []
+                input("Continue…? ")
+
+            block.append(line)
         else: # EOF
-            print(f" :: {num_dups}")
+            process_block(block)
 
     # if output file not provided assume rdfind_result_parser.txt
     # open file
@@ -104,6 +101,21 @@ def set_env():
     print(f"rdfind_results: {rdfind_results}")
 
     return basedir, rdfind_results
+
+
+def process_block(block):
+    """
+    Processes a block of dups.
+
+    :param block: a list of dups.
+    block[0] is the one considered original by rdfind.
+    :return:
+    """
+    print(f"Main: {block[0][7]}")
+    print(f"Dups: {len(block) - 1}")
+
+    for line in block[1:]:
+        print(f"    {line[7]}")
 
 
 if __name__ == "__main__":
