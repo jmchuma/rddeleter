@@ -15,32 +15,7 @@ import sys
 def main():
     """
     """
-    # if base dir is not provided assume basedir is cwd
-    if len(sys.argv) > 1:
-        BASEDIR = sys.argv[1]
-    else:
-        BASEDIR = os.getcwd()
-
-    print(f"BASEDIR: {BASEDIR}")
-
-    # open rdfind result file passed as arg
-    # if no file passed as arg ask for file
-    if len(sys.argv) > 2:
-        RDFIND_RESULTS = BASEDIR+"/"+sys.argv[2]
-    else:
-        while True:
-            try:
-                print("Enter rdfind result file.")
-                RDFIND_RESULTS = input("Leave empty for rdfind_result.txt: ").strip()
-                if len(RDFIND_RESULTS.strip()) != 0:
-                    RDFIND_RESULTS = BASEDIR+"/"+RDFIND_RESULTS
-                else:
-                    RDFIND_RESULTS = BASEDIR+"/rdfind_result.txt"
-                break
-            except EOFError:  # control-d
-                sys.exit()
-
-    print(f"RDFIND_RESULTS: {RDFIND_RESULTS}")
+    BASEDIR, RDFIND_RESULTS = set_env()
 
     with open(RDFIND_RESULTS, "r") as file_in:
         num_main = 0
@@ -88,6 +63,47 @@ def main():
     #         ask if trash orig (if it's just one remaining)
     #     else ask again if compare or delete or quit
     # write report of actions to file
+
+
+def set_env():
+    """
+    Sets the environment well be working on.
+
+    To be precise, it sets:
+    - the base working directory
+    - the location of the rdfind result file
+
+    :return: a tuple with the base directory and the path to the rdfind result
+    file. As in (base_dir, result_path)
+    """
+    # if base dir is not provided assume basedir is cwd
+    if len(sys.argv) > 1:
+        basedir = sys.argv[1]
+    else:
+        basedir = os.getcwd()
+
+    print(f"basedir: {basedir}")
+
+    # open rdfind result file passed as arg
+    # if no file passed as arg ask for file
+    if len(sys.argv) > 2:
+        rdfind_results = basedir + "/" + sys.argv[2]
+    else:
+        while True:
+            try:
+                print("Enter rdfind result file.")
+                rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
+                if len(rdfind_results.strip()) != 0:
+                    rdfind_results = basedir + "/" + rdfind_results
+                else:
+                    rdfind_results = basedir + "/rdfind_result.txt"
+                break
+            except EOFError:  # control-d
+                sys.exit()
+
+    print(f"rdfind_results: {rdfind_results}")
+
+    return basedir, rdfind_results
 
 
 if __name__ == "__main__":
