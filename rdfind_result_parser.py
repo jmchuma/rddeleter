@@ -22,7 +22,7 @@ def main():
 
         for line in file_in:
             line = line.lstrip()
-            if line.startswith("#"):
+            if line.startswith("#") or not line:
                 continue
 
             line = line.split()
