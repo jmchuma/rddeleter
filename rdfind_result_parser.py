@@ -29,7 +29,6 @@ def main():
             if line[0] == "DUPTYPE_FIRST_OCCURRENCE" and len(block) != 0:
                 process_block(block)
                 block = []
-                input("Continue…? ")
 
             block.append(line)
         else:  # EOF
@@ -79,17 +78,35 @@ def set_env():
 
 def process_block(block):
     """
-    Processes a block of dups.
+    Processes a block of duplicates.
 
-    :param block: a list of dups.
+    :param block: a list of duplicates.
     block[0] is the one considered original by rdfind.
     :return:
     """
-    print(f"Main: {block[0][7]}")
-    print(f"Dups: {len(block) - 1}")
+    multiplier = 0
+    last = len(block) - 1
+    while multiplier >= 0:
+        print(f"Main:\n    [0] {block[0][7]}")
 
-    for line in block[1:]:
-        print(f"    {line[7]}")
+        start = 10 * multiplier + 1
+        multiplier += 1
+        # I'm going to calculate it anyway for the if block,
+        # so I may as well save it.
+        end = start + 10
+        if end > last:
+            end = last  # does it really matter?
+            multiplier = -1  # to end while block
+            print(f"Dups ({start}:{last}) of {last}:")
+            subblock = block[start:]
+        else:
+            print(f"Dups ({start}:{end - 1}) of {last}:")
+            subblock = block[start:end]
+
+        for index, line in enumerate(subblock):
+            print(f"    [{start+index}] {line[7]}")
+
+        input("Whaddaya wanna do?: ")
 
 
 if __name__ == "__main__":
