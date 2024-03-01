@@ -32,7 +32,7 @@ def main():
                 input("Continue…? ")
 
             block.append(line)
-        else: # EOF
+        else:  # EOF
             process_block(block)
 
 
@@ -64,7 +64,7 @@ def set_env():
             try:
                 print("Enter rdfind result file.")
                 rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
-                if len(rdfind_results.strip()) != 0:
+                if rdfind_results:
                     rdfind_results = basedir + "/" + rdfind_results
                 else:
                     rdfind_results = basedir + "/rdfind_result.txt"
