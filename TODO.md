@@ -23,3 +23,10 @@ Add options to:
     - Update rdfind_results.txt removing or reordering files?
     - Clone file to log file and store what's done with what's left?
 - Quit
+
+
+Type hints and function annotations
+===================================
+See:
+- https://docs.python.org/3/library/typing.html
+- https://peps.python.org/pep-3107/
