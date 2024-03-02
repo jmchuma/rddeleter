@@ -106,7 +106,43 @@ def process_block(block):
         for index, line in enumerate(subblock):
             print(f"    [{start+index}] {line[7]}")
 
-        input("Whaddaya wanna do?: ")
+        ans = menu_listdups()
+        if ans == "1":    # Display next sub block
+            continue
+        elif ans == "2":  # Display next block
+            break
+        elif ans == "3":  # Swap main file with a duplicate in sub block
+            pass
+        elif ans == "4":  # Remove SOME duplicates in sub block
+            pass
+        elif ans == "5":  # Remove ALL duplicates
+            continue
+        elif ans == "6":  # Remove original and ALL duplicates
+            pass
+        elif ans == "7":  # Exit
+            sys.exit()
+
+
+def menu_listdups():
+    """
+    Displays main menu.
+    :return: the user selection
+    """
+    while True:
+        print("Whaddaya wanna do?")
+        print("[1] Display next sub block")
+        print("[2] Display next block")
+        print("[3] Swap main file with a duplicate in sub block")
+        print("[4] Remove SOME duplicates in sub block")
+        print("[5] Remove ALL duplicates")
+        print("[6] Remove original and ALL duplicates)")
+        print("[7] Exit")
+        ans = input("> ").strip()
+        if ans in ("1", "2", "3", "4", "5", "6", "7"):
+            return ans
+        else:
+            print(f"{ans} is not a valid option.")
+            print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
 
 
 if __name__ == "__main__":
