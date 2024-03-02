@@ -4,7 +4,6 @@ rdfind_result_parser.py
 - Try to import and use [`trashcli`](https://pypi.org/project/trash-cli/):
     - `from trashcli.put.main import main as main`
     - `import trashcli.put as trash`
-
 - Exit using `sys.exit(main())`
 
 `process_block`

@@ -13,7 +13,11 @@ import sys
 
 
 def main():
-    """
+    """ Reads and processes lines from a rdfind result file.
+
+    Call set_env() to set the environment.
+    Reads the content of the rdfind result file, grouping sets of duplicates,
+    and feeds them to process_block.
     """
     BASEDIR, RDFIND_RESULTS = set_env()
 
@@ -52,26 +56,17 @@ def set_env():
     else:
         basedir = os.getcwd()
 
-    print(f"basedir: {basedir}")
-
     # open rdfind result file passed as arg
     # if no file passed as arg ask for file
     if len(sys.argv) > 2:
         rdfind_results = basedir + "/" + sys.argv[2]
     else:
-        while True:
-            try:
-                print("Enter rdfind result file.")
-                rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
-                if rdfind_results:
-                    rdfind_results = basedir + "/" + rdfind_results
-                else:
-                    rdfind_results = basedir + "/rdfind_result.txt"
-                break
-            except EOFError:  # control-d
-                sys.exit()
-
-    print(f"rdfind_results: {rdfind_results}")
+        print("Enter rdfind result file.")
+        rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
+        if rdfind_results:
+            rdfind_results = basedir + "/" + rdfind_results
+        else:
+            rdfind_results = basedir + "/rdfind_result.txt"
 
     return basedir, rdfind_results
 
