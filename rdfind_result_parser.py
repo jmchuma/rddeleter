@@ -108,17 +108,19 @@ def process_block(block):
             break
         elif ans == "3":  # Swap main file with a duplicate in sub block
             index_dup = menu_select_dups(subblock)[0]
-            index_dup = int(index_dup)
-            tmp_line = block[0]
-            block[0] = block[start + index_dup]
-            block[start + index_dup] = tmp_line
+            if index_dup != "ABORT":
+                index_dup = int(index_dup)
+                tmp_line = block[0]
+                block[0] = block[start + index_dup]
+                block[start + index_dup] = tmp_line
             # show this sub block again, with the updated info
             if multiplier > 0:
                 multiplier -= 1
             else:  # it's the last sub-block
                 multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
-            pass
+            indexes = menu_select_dups(subblock, True)
+            print(indexes)
         elif ans == "5":  # Remove ALL duplicates
             continue
         elif ans == "6":  # Remove original and ALL duplicates
@@ -157,19 +159,68 @@ def menu_select_dups(dups, multi=False):
     :param multi: if true, can select many, if false (default) only one.
     :return: a list with the selected options or ["ALL"].
     """
+    valid = [str(x) for x in range(len(dups))]
+    valid.append("ABORT")
+    if multi:
+        valid.append("ALL")
+
     while True:
         for index, dup in enumerate(dups):
             print(f"[{index}] {dup[7]}")
 
         if multi:
-            return []  # TODO
-        else:
-            ans = input("Select a file > ").strip()
-            if ans in [str(x) for x in range(len(dups))]:
-                return [ans]
+            opts = input("Enter a space separated list of indexes, ALL, or ABORT > ").strip().split()
+            if not opts:  # no option selected
+                continue
+            # just in case there are repeated options
+            # TODO do I need a list for choices or is a set OK?
+            opts = list(set(opts))
+
+            bad_opts = []
+            for o in opts:
+                if o not in valid:
+                    bad_opts.append(o)
+
+            if bad_opts:
+                if len(bad_opts) == 1:
+                    print(f"{bad_opts[0]} is not valid option.")
+                else:
+                    print(f"{bad_opts} are not valid options.")
+
+                print(f"Valid options are {valid}.")
             else:
-                print(f"{ans} is not a valid option.")
-                print(f"Valid options are {[str(x) for x in range(len(dups))]}.")
+                if len(opts) > 1:
+                    if "ABORT" in opts:
+                        while True:
+                            print("ABORT takes priority over other options!!!")
+                            ans = input("Abort? ").strip().lower()
+                            if ans == "yes":
+                                #return {"ABORT"}
+                                return ["ABORT"]
+                            elif ans == "no":
+                                opts.remove("ABORT")
+                            else:
+                                print("Enter Yes or No.")
+                    if "ALL" in opts:
+                        while True:
+                            print("ALL takes priority over other options!!!")
+                            ans = input("Select all? ").strip().lower()
+                            if ans == "yes":
+                                #return {"ALL"}
+                                return ["ALL"]
+                            elif ans == "no":
+                                opts.remove("ALL")
+                            else:
+                                print("Enter Yes or No.")
+
+                return opts
+        else:  # multi == False
+            opt = input("Select a file or type ABORT > ").strip()
+            if opt in valid:
+                return [opt]
+            else:
+                print(f"{opt} is not a valid option.")
+                print(f"Valid options are {valid}.")
 
 
 if __name__ == "__main__":
