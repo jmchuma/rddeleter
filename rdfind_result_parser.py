@@ -79,7 +79,7 @@ def process_block(block):
     block[0] is the one considered original by rdfind.
     :return:
     """
-    multiplier = 0
+    multiplier = 0  # to control the sub block we are in
     last = len(block) - 1
     while multiplier >= 0:
         print(f"Main:\n    [0] {block[0][7]}")
@@ -107,7 +107,16 @@ def process_block(block):
         elif ans == "2":  # Display next block
             break
         elif ans == "3":  # Swap main file with a duplicate in sub block
-            pass
+            index_dup = menu_select_dups(subblock)[0]
+            index_dup = int(index_dup)
+            tmp_line = block[0]
+            block[0] = block[start + index_dup]
+            block[start + index_dup] = tmp_line
+            # show this sub block again, with the updated info
+            if multiplier > 0:
+                multiplier -= 1
+            else:  # it's the last sub-block
+                multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
             pass
         elif ans == "5":  # Remove ALL duplicates
@@ -138,6 +147,29 @@ def menu_listdups():
         else:
             print(f"{ans} is not a valid option.")
             print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
+
+
+def menu_select_dups(dups, multi=False):
+    """Displays a menu with action to select duplicates.
+
+    :param dups: a list of duplicates. Each element if a list with information
+    of a file.
+    :param multi: if true, can select many, if false (default) only one.
+    :return: a list with the selected options or ["ALL"].
+    """
+    while True:
+        for index, dup in enumerate(dups):
+            print(f"[{index}] {dup[7]}")
+
+        if multi:
+            return []  # TODO
+        else:
+            ans = input("Select a file > ").strip()
+            if ans in [str(x) for x in range(len(dups))]:
+                return [ans]
+            else:
+                print(f"{ans} is not a valid option.")
+                print(f"Valid options are {[str(x) for x in range(len(dups))]}.")
 
 
 if __name__ == "__main__":
