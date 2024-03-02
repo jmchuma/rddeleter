@@ -39,96 +39,6 @@ def main():
             process_block(block)
 
 
-def process_block(block):
-    """
-    Processes a block of duplicates.
-
-    :param block: a list of duplicates.
-    block[0] is the one considered original by rdfind.
-    :return:
-    """
-    multiplier = 0  # to control the sub block we are in
-    last = len(block) - 1
-    while multiplier >= 0:
-        print(f"Main:\n    [0] {block[0][7]}")
-
-        start = 10 * multiplier + 1
-        multiplier += 1
-        # I'm going to calculate it anyway for the if block,
-        # so I may as well save it.
-        end = start + 10
-        if end > last:
-            end = last  # does it really matter?
-            multiplier = -1  # to end while block
-            print(f"Dups ({start}:{last}) of {last}:")
-            subblock = block[start:]
-        else:
-            print(f"Dups ({start}:{end - 1}) of {last}:")
-            subblock = block[start:end]
-
-        for index, line in enumerate(subblock):
-            print(f"    [{start+index}] {line[7]}")
-
-        ans = menu_listdups()
-        if ans == "1":    # Display next sub block
-            continue
-        elif ans == "2":  # Display next block
-            break
-        elif ans == "3":  # Swap main file with a duplicate in sub block
-            index_dup = menu_select_dups(subblock)[0]
-            if index_dup != "ABORT":
-                index_dup = int(index_dup)
-                tmp_line = block[0]
-                block[0] = block[start + index_dup]
-                block[start + index_dup] = tmp_line
-            # show this sub block again, with the updated info
-            if multiplier > 0:
-                multiplier -= 1
-            else:  # it's the last sub-block
-                multiplier = 0
-        elif ans == "4":  # Remove SOME duplicates in sub block
-            indexes = menu_select_dups(subblock, True)
-            print(indexes)
-        elif ans == "5":  # Remove ALL duplicates
-            continue
-        elif ans == "6":  # Remove original and ALL duplicates
-            pass
-        elif ans == "7":  # Exit
-            sys.exit()
-
-
-def set_env():
-    """
-    Sets the environment well be working on.
-
-    To be precise, it sets:
-    - the base working directory
-    - the location of the rdfind result file
-
-    :return: a tuple with the base directory and the path to the rdfind result
-    file. As in (base_dir, result_path)
-    """
-    # if base dir is not provided assume basedir is cwd
-    if len(sys.argv) > 1:
-        basedir = sys.argv[1]
-    else:
-        basedir = os.getcwd()
-
-    # open rdfind result file passed as arg
-    # if no file passed as arg ask for file
-    if len(sys.argv) > 2:
-        rdfind_results = basedir + "/" + sys.argv[2]
-    else:
-        print("Enter rdfind result file.")
-        rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
-        if rdfind_results:
-            rdfind_results = basedir + "/" + rdfind_results
-        else:
-            rdfind_results = basedir + "/rdfind_result.txt"
-
-    return basedir, rdfind_results
-
-
 def menu_listdups():
     """
     Displays main menu.
@@ -221,6 +131,96 @@ def menu_select_dups(dups, multi=False):
             else:
                 print(f"{opt} is not a valid option.")
                 print(f"Valid options are {valid}.")
+
+
+def process_block(block):
+    """
+    Processes a block of duplicates.
+
+    :param block: a list of duplicates.
+    block[0] is the one considered original by rdfind.
+    :return:
+    """
+    multiplier = 0  # to control the sub block we are in
+    last = len(block) - 1
+    while multiplier >= 0:
+        print(f"Main:\n    [0] {block[0][7]}")
+
+        start = 10 * multiplier + 1
+        multiplier += 1
+        # I'm going to calculate it anyway for the if block,
+        # so I may as well save it.
+        end = start + 10
+        if end > last:
+            end = last  # does it really matter?
+            multiplier = -1  # to end while block
+            print(f"Dups ({start}:{last}) of {last}:")
+            subblock = block[start:]
+        else:
+            print(f"Dups ({start}:{end - 1}) of {last}:")
+            subblock = block[start:end]
+
+        for index, line in enumerate(subblock):
+            print(f"    [{start+index}] {line[7]}")
+
+        ans = menu_listdups()
+        if ans == "1":    # Display next sub block
+            continue
+        elif ans == "2":  # Display next block
+            break
+        elif ans == "3":  # Swap main file with a duplicate in sub block
+            index_dup = menu_select_dups(subblock)[0]
+            if index_dup != "ABORT":
+                index_dup = int(index_dup)
+                tmp_line = block[0]
+                block[0] = block[start + index_dup]
+                block[start + index_dup] = tmp_line
+            # show this sub block again, with the updated info
+            if multiplier > 0:
+                multiplier -= 1
+            else:  # it's the last sub-block
+                multiplier = 0
+        elif ans == "4":  # Remove SOME duplicates in sub block
+            indexes = menu_select_dups(subblock, True)
+            print(indexes)
+        elif ans == "5":  # Remove ALL duplicates
+            continue
+        elif ans == "6":  # Remove original and ALL duplicates
+            pass
+        elif ans == "7":  # Exit
+            sys.exit()
+
+
+def set_env():
+    """
+    Sets the environment well be working on.
+
+    To be precise, it sets:
+    - the base working directory
+    - the location of the rdfind result file
+
+    :return: a tuple with the base directory and the path to the rdfind result
+    file. As in (base_dir, result_path)
+    """
+    # if base dir is not provided assume basedir is cwd
+    if len(sys.argv) > 1:
+        basedir = sys.argv[1]
+    else:
+        basedir = os.getcwd()
+
+    # open rdfind result file passed as arg
+    # if no file passed as arg ask for file
+    if len(sys.argv) > 2:
+        rdfind_results = basedir + "/" + sys.argv[2]
+    else:
+        print("Enter rdfind result file.")
+        rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
+        if rdfind_results:
+            rdfind_results = basedir + "/" + rdfind_results
+        else:
+            rdfind_results = basedir + "/rdfind_result.txt"
+
+    return basedir, rdfind_results
 
 
 if __name__ == "__main__":
