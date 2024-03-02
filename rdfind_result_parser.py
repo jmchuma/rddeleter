@@ -39,6 +39,52 @@ def main():
             process_block(block)
 
 
+def exec_delete(dups, indexes=(), method="trash"):
+    """Delete files using the given method.
+
+    :param dups: list of duplicates to delete
+    :param indexes: the indexes from dups that should be deleted. If empty,
+    deletes all files in dups.
+    :param method: the method to delete files. Possible values are rm and trash.
+    :return: a list of the remaining files.
+    """
+    if indexes:  # delete many
+        if method == "rm":
+            for i in indexes:
+                print(f"rm {dups[int(i)][7]}")
+        else:  # trash
+            for i in indexes:
+                print(f"trash {dups[int(i)][7]}")
+    else:
+        if method == "rm":
+            for line in dups:
+                print(f"rm {line[7]}")
+        else:  # trash
+            for line in dups:
+                print(f"trash {line[7]}")
+
+    return dups
+
+
+def menu_delete():
+    """Ask how to delete files.
+
+    :return: a str with the selected option.
+    """
+    while True:
+        print("Do you want to…")
+        print("[1] delete permanently")
+        print("[2] move to trash")
+        print("[3] abort")
+        print("[4] quit")
+        ans = input("> ").strip()
+        if ans in ("1", "2", "3", "4"):
+            return ans
+        else:
+            print(f"{ans} is not a valid option.")
+            print("Valid options are 1, 2, 3, or 4.")
+
+
 def menu_listdups():
     """
     Displays main menu.
@@ -51,7 +97,7 @@ def menu_listdups():
         print("[3] Swap main file with a duplicate in sub block")
         print("[4] Remove SOME duplicates in sub block")
         print("[5] Remove ALL duplicates")
-        print("[6] Remove original and ALL duplicates)")
+        print("[6] Remove original and ALL duplicates")
         print("[7] Exit")
         ans = input("> ").strip()
         if ans in ("1", "2", "3", "4", "5", "6", "7"):
@@ -184,9 +230,39 @@ def process_block(block):
             indexes = menu_select_dups(subblock, True)
             print(indexes)
         elif ans == "5":  # Remove ALL duplicates
-            continue
+            ans = menu_delete()
+            if ans == "1":  # delete permanently
+                exec_delete(block[1:], method="rm")
+                break  # exit loop, load next block
+            elif ans == "2":  # move to trash
+                exec_delete(block[1:])
+                break  # exit loop, load next block
+            elif ans == "3":  # abort
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+                continue
+            elif ans == "4":  # exit
+                sys.exit()
         elif ans == "6":  # Remove original and ALL duplicates
-            pass
+            ans = menu_delete()
+            if ans == "1":  # delete permanently
+                exec_delete(block, method="rm")
+                break  # exit loop, load next block
+            elif ans == "2":  # move to trash
+                exec_delete(block)
+                break  # exit loop, load next block
+            elif ans == "3":  # abort
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+                continue
+            elif ans == "4":  # exit
+                sys.exit()
         elif ans == "7":  # Exit
             sys.exit()
 
