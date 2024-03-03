@@ -224,9 +224,13 @@ def process_block(block):
             index_dup = menu_select_dups(subblock)
             if index_dup != "ABORT":
                 index_dup = int(index_dup)
-                tmp_line = block[0]
+                tmp = block[0]
                 block[0] = block[start + index_dup]
-                block[start + index_dup] = tmp_line
+                block[start + index_dup] = tmp
+                # swap the duptype too
+                tmp = block[0][0]
+                block[0][0] = block[start + index_dup][0]
+                block[start + index_dup][0] = tmp
             # show this sub block again, with the updated info
             if multiplier > 0:
                 multiplier -= 1
