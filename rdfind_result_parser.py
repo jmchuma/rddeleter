@@ -42,26 +42,30 @@ def main():
 def exec_delete(dups, indexes=(), method="trash"):
     """Delete files using the given method.
 
-    :param dups: list of duplicates to delete
+    :param dups: list of duplicates to delete.
     :param indexes: the indexes from dups that should be deleted. If empty,
     deletes all files in dups.
     :param method: the method to delete files. Possible values are rm and trash.
     :return: a list of the remaining files.
     """
-    if indexes:  # delete many
+    if indexes:  # delete some
         if method == "rm":
             for i in indexes:
                 print(f"rm {dups[int(i)][7]}")
+                dups.pop(int(i))
         else:  # trash
             for i in indexes:
                 print(f"trash {dups[int(i)][7]}")
-    else:
+                dups.pop(int(i))
+    else: # delete all
         if method == "rm":
             for line in dups:
                 print(f"rm {line[7]}")
+                dups.remove(line)
         else:  # trash
             for line in dups:
                 print(f"trash {line[7]}")
+                dups.remove(line)
 
     return dups
 
@@ -113,7 +117,8 @@ def menu_select_dups(dups, multi=False):
     :param dups: a list of duplicates. Each element if a list with information
     of a file.
     :param multi: if true, can select many, if false (default) only one.
-    :return: a list with the selected options or ["ALL"].
+    :return: a list with the selected options, "ALL", "ABORT", or, if multi is
+    False, a str representing a single selection.
     """
     valid = [str(x) for x in range(len(dups))]
     valid.append("ABORT")
@@ -151,8 +156,7 @@ def menu_select_dups(dups, multi=False):
                             print("ABORT takes priority over other options!!!")
                             ans = input("Abort? ").strip().lower()
                             if ans == "yes":
-                                #return {"ABORT"}
-                                return ["ABORT"]
+                                return "ABORT"
                             elif ans == "no":
                                 opts.remove("ABORT")
                             else:
@@ -162,18 +166,20 @@ def menu_select_dups(dups, multi=False):
                             print("ALL takes priority over other options!!!")
                             ans = input("Select all? ").strip().lower()
                             if ans == "yes":
-                                #return {"ALL"}
-                                return ["ALL"]
+                                return "ALL"
                             elif ans == "no":
                                 opts.remove("ALL")
                             else:
                                 print("Enter Yes or No.")
+                else:  # len (opts) is 1
+                    if "ABORT" in opts or "ALL" in opts:
+                        return opts[0]
 
                 return opts
         else:  # multi == False
             opt = input("Select a file or type ABORT > ").strip()
             if opt in valid:
-                return [opt]
+                return opt
             else:
                 print(f"{opt} is not a valid option.")
                 print(f"Valid options are {valid}.")
@@ -215,7 +221,7 @@ def process_block(block):
         elif ans == "2":  # Display next block
             break
         elif ans == "3":  # Swap main file with a duplicate in sub block
-            index_dup = menu_select_dups(subblock)[0]
+            index_dup = menu_select_dups(subblock)
             if index_dup != "ABORT":
                 index_dup = int(index_dup)
                 tmp_line = block[0]
@@ -228,7 +234,45 @@ def process_block(block):
                 multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
             indexes = menu_select_dups(subblock, True)
-            print(indexes)
+            if indexes == "ABORT":
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+                continue
+            elif indexes == "ALL":
+                indexes = ()
+            else:
+                # add start to the indexes in the subblock
+                # to delete the right elements
+                indexes = [str(start + int(x)) for x in indexes]
+            ans = menu_delete()
+            if ans == "1":  # delete permanently
+                block = exec_delete(block, indexes, "rm")
+                last = len(block) - 1
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+            elif ans == "2":  # move to trash
+                block = exec_delete(block, indexes)
+                last = len(block) - 1
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+            elif ans == "3":  # abort
+                # show this sub block again
+                if multiplier > 0:
+                    multiplier -= 1
+                else:  # it's the last sub-block
+                    multiplier = 0
+                continue
+            elif ans == "4":  # exit
+                sys.exit()
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
