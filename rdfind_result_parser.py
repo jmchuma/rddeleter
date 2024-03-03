@@ -79,7 +79,7 @@ def menu_delete():
         print("Do you want to…")
         print("[1] delete permanently")
         print("[2] move to trash")
-        print("[3] abort")
+        print("[3] cancel")
         ans = input("> ").strip()
         if ans in ("1", "2", "3"):
             return ans
@@ -116,11 +116,11 @@ def menu_select_dups(dups, multi=False):
     :param dups: a list of duplicates. Each element if a list with information
     of a file.
     :param multi: if true, can select many, if false (default) only one.
-    :return: a list with the selected options, "ALL", "ABORT", or, if multi is
+    :return: a list with the selected options, "ALL", "CANCEL", or, if multi is
     False, a str representing a single selection.
     """
     valid = [str(x) for x in range(len(dups))]
-    valid.append("ABORT")
+    valid.append("CANCEL")
     if multi:
         valid.append("ALL")
 
@@ -129,7 +129,7 @@ def menu_select_dups(dups, multi=False):
             print(f"[{index}] {dup[7]}")
 
         if multi:
-            opts = input("Enter a space separated list of indexes, ALL, or ABORT > ").strip().split()
+            opts = input("Enter a space separated list of indexes, ALL, or CANCEL > ").strip().split()
             if not opts:  # no option selected
                 continue
             # just in case there are repeated options
@@ -150,14 +150,14 @@ def menu_select_dups(dups, multi=False):
                 print(f"Valid options are {valid}.")
             else:
                 if len(opts) > 1:
-                    if "ABORT" in opts:
+                    if "CANCEL" in opts:
                         while True:
-                            print("ABORT takes priority over other options!!!")
-                            ans = input("Abort? ").strip().lower()
+                            print("CANCEL takes priority over other options!!!")
+                            ans = input("Cancel? ").strip().lower()
                             if ans == "yes":
-                                return "ABORT"
+                                return "CANCEL"
                             elif ans == "no":
-                                opts.remove("ABORT")
+                                opts.remove("CANCEL")
                             else:
                                 print("Enter Yes or No.")
                     if "ALL" in opts:
@@ -171,12 +171,12 @@ def menu_select_dups(dups, multi=False):
                             else:
                                 print("Enter Yes or No.")
                 else:  # len (opts) is 1
-                    if "ABORT" in opts or "ALL" in opts:
+                    if "CANCEL" in opts or "ALL" in opts:
                         return opts[0]
 
                 return opts
         else:  # multi == False
-            opt = input("Select a file or type ABORT > ").strip()
+            opt = input("Select a file or type CANCEL > ").strip()
             if opt in valid:
                 return opt
             else:
@@ -221,7 +221,7 @@ def process_block(block):
             break
         elif ans == "3":  # Swap main file with a duplicate in sub block
             index_dup = menu_select_dups(subblock)
-            if index_dup != "ABORT":
+            if index_dup != "CANCEL":
                 index_dup = int(index_dup)
                 tmp = block[0]
                 block[0] = block[start + index_dup]
@@ -237,7 +237,7 @@ def process_block(block):
                 multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
             indexes = menu_select_dups(subblock, True)
-            if indexes == "ABORT":
+            if indexes == "CANCEL":
                 # show this sub block again
                 if multiplier > 0:
                     multiplier -= 1
@@ -267,7 +267,7 @@ def process_block(block):
                     multiplier -= 1
                 else:  # it's the last sub-block
                     multiplier = 0
-            elif ans == "3":  # abort
+            elif ans == "3":  # cancel
                 # show this sub block again
                 if multiplier > 0:
                     multiplier -= 1
@@ -282,7 +282,7 @@ def process_block(block):
             elif ans == "2":  # move to trash
                 exec_delete(block[1:])
                 break  # exit loop, load next block
-            elif ans == "3":  # abort
+            elif ans == "3":  # cancel
                 # show this sub block again
                 if multiplier > 0:
                     multiplier -= 1
@@ -297,7 +297,7 @@ def process_block(block):
             elif ans == "2":  # move to trash
                 exec_delete(block)
                 break  # exit loop, load next block
-            elif ans == "3":  # abort
+            elif ans == "3":  # cancel
                 # show this sub block again
                 if multiplier > 0:
                     multiplier -= 1
