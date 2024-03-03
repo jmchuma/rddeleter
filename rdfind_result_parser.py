@@ -80,13 +80,12 @@ def menu_delete():
         print("[1] delete permanently")
         print("[2] move to trash")
         print("[3] abort")
-        print("[4] quit")
         ans = input("> ").strip()
-        if ans in ("1", "2", "3", "4"):
+        if ans in ("1", "2", "3"):
             return ans
         else:
             print(f"{ans} is not a valid option.")
-            print("Valid options are 1, 2, 3, or 4.")
+            print("Valid options are 1, 2, or 3.")
 
 
 def menu_listdups():
@@ -275,8 +274,6 @@ def process_block(block):
                 else:  # it's the last sub-block
                     multiplier = 0
                 continue
-            elif ans == "4":  # exit
-                sys.exit()
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
@@ -292,8 +289,6 @@ def process_block(block):
                 else:  # it's the last sub-block
                     multiplier = 0
                 continue
-            elif ans == "4":  # exit
-                sys.exit()
         elif ans == "6":  # Remove original and ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
@@ -309,8 +304,6 @@ def process_block(block):
                 else:  # it's the last sub-block
                     multiplier = 0
                 continue
-            elif ans == "4":  # exit
-                sys.exit()
         elif ans == "7":  # Exit
             sys.exit()
 
