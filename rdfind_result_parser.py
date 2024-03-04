@@ -225,13 +225,14 @@ def process_block(block: list[list[str]]) -> None:
             else:  # it's the last sub-block
                 multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
+            # this option means showing the sub block again
+            if multiplier > 0:
+                multiplier -= 1
+            else:  # it's the last sub-block
+                multiplier = 0
+
             indexes = menu_select_dups(subblock, True)
             if indexes == "CANCEL":
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
                 continue
             elif indexes == "ALL":
                 indexes = ()
@@ -239,29 +240,15 @@ def process_block(block: list[list[str]]) -> None:
                 # add start to the indexes in the subblock
                 # to delete the right elements
                 indexes = [str(start + int(x)) for x in indexes]
+
             ans = menu_delete()
             if ans == "1":  # delete permanently
                 block = exec_delete(block, indexes, "rm")
                 last = len(block) - 1
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
             elif ans == "2":  # move to trash
                 block = exec_delete(block, indexes)
                 last = len(block) - 1
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
             elif ans == "3":  # cancel
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
                 continue
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
