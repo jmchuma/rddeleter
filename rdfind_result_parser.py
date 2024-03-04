@@ -55,7 +55,7 @@ def exec_delete(dups: list[list[str]], indexes: tuple[str, ...] = (), cmd: str =
     else: # delete all
         for line in dups:
             print(f"{cmd} {line[7]}")
-            dups.remove(line)
+        dups.clear()
 
     return dups
 
