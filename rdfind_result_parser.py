@@ -39,7 +39,7 @@ def main():
             process_block(block)
 
 
-def exec_delete(dups: list[list[str]], indexes: tuple[str, ...] = (), cmd: str = "trash") -> list[list[str]]:
+def exec_delete(dups: list[list[str]], indexes: tuple[int, ...] = (), cmd: str = "trash") -> list[list[str]]:
     """Delete files using the given method.
 
     :param dups: list of duplicates to delete.
@@ -49,10 +49,13 @@ def exec_delete(dups: list[list[str]], indexes: tuple[str, ...] = (), cmd: str =
     :return: a list of the remaining files.
     """
     if indexes:  # delete some
-        for i in indexes:
-            print(f"{cmd} {dups[int(i)][7]}")
-            dups.pop(int(i))
-    else: # delete all
+        # Reversing indexes to delete the higher indexes first.
+        # Avoids deleting the wrong element or getting an IndexError
+        # because a lower index was previously deleted in the loop.
+        for i in sorted(indexes, reverse=True):
+            print(f"{cmd} {dups[i][7]}")
+            del dups[i]
+    else:  # delete all
         for line in dups:
             print(f"{cmd} {line[7]}")
         dups.clear()
@@ -225,9 +228,9 @@ def process_block(block: list[list[str]]) -> None:
             elif indexes == "ALL":
                 indexes = ()
             else:
-                # add start to the indexes in the subblock
+                # add start to the indexes in the sub-block
                 # to delete the right elements
-                indexes = tuple(str(start + int(x)) for x in indexes)
+                indexes = tuple(start + int(x) for x in indexes)
 
             ans = menu_delete()
             if ans == "1":  # delete permanently
@@ -266,6 +269,7 @@ def process_block(block: list[list[str]]) -> None:
             multiplier -= 1
         else:  # it's the last sub-block
             multiplier = 0
+
 
 def set_env() -> tuple[str, ...]:
     """
