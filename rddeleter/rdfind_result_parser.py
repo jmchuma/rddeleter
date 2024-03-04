@@ -8,7 +8,7 @@ rdfind_result.txt in the base directory.
 """
 
 
-import os
+import environment
 import sys
 
 
@@ -19,9 +19,9 @@ def main():
     Reads the content of the rdfind result file, grouping sets of duplicates,
     and feeds them to process_block.
     """
-    BASEDIR, RDFIND_RESULTS = set_env()
+    environment.set_env()
 
-    with open(RDFIND_RESULTS, "r") as file_in:
+    with open(environment.RDFIND_RESULTS, "r") as file_in:
         block = []
 
         for line in file_in:
@@ -269,38 +269,6 @@ def process_block(block: list[list[str]]) -> None:
             multiplier -= 1
         else:  # it's the last sub-block
             multiplier = 0
-
-
-def set_env() -> tuple[str, ...]:
-    """
-    Sets the environment well be working on.
-
-    To be precise, it sets:
-    - the base working directory
-    - the location of the rdfind result file
-
-    :return: a tuple with the base directory and the path to the rdfind result
-    file. As in (base_dir, result_path)
-    """
-    # if base dir is not provided assume basedir is cwd
-    if len(sys.argv) > 1:
-        basedir = sys.argv[1]
-    else:
-        basedir = os.getcwd()
-
-    # open rdfind result file passed as arg
-    # if no file passed as arg ask for file
-    if len(sys.argv) > 2:
-        rdfind_results = basedir + "/" + sys.argv[2]
-    else:
-        print("Enter rdfind result file.")
-        rdfind_results = input("Leave empty for rdfind_result.txt: ").strip()
-        if rdfind_results:
-            rdfind_results = basedir + "/" + rdfind_results
-        else:
-            rdfind_results = basedir + "/rdfind_result.txt"
-
-    return basedir, rdfind_results
 
 
 if __name__ == "__main__":
