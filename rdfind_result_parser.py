@@ -193,7 +193,6 @@ def process_block(block: list[list[str]]) -> None:
         # so I may as well save it.
         end = start + 10
         if end > last:
-            end = last  # does it really matter?
             multiplier = -1  # to end while block
             print(f"Dups ({start}:{last}) of {last}:")
             subblock = block[start:]
