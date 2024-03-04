@@ -139,7 +139,10 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[s
 
                 print(f"Valid options are {valid}.")
             else:
-                if len(opts) > 1:
+                if len(opts) == 1:
+                    if "CANCEL" in opts or "ALL" in opts:
+                        return opts[0]
+                else:
                     if "CANCEL" in opts:
                         while True:
                             print("CANCEL takes priority over other options!!!")
@@ -160,9 +163,6 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[s
                                 opts.remove("ALL")
                             else:
                                 print("Enter Yes or No.")
-                else:  # len (opts) is 1
-                    if "CANCEL" in opts or "ALL" in opts:
-                        return opts[0]
 
                 return opts
         else:  # multi == False
