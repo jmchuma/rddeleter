@@ -30,3 +30,16 @@ Type hints and function annotations
 See:
 - https://docs.python.org/3/library/typing.html
 - https://peps.python.org/pep-3107/
+
+
+Empty list as default argument
+==============================
+https://stackoverflow.com/questions/366422/how-can-i-avoid-issues-caused-by-pythons-early-bound-default-parameters-e-g-m
+
+
+Arguments
+=========
+- https://stackoverflow.com/questions/36901/what-does-double-star-asterisk-and-star-asterisk-do-for-parameters
+- https://www.geeksforgeeks.org/args-kwargs-python/
+- https://docs.python.org/3/tutorial/controlflow.html#more-on-defining-functions
+- https://pythonsimplified.com/python-parameters-and-arguments-demystified/
