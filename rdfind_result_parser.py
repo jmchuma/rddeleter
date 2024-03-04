@@ -193,7 +193,7 @@ def process_block(block: list[list[str]]) -> None:
         # so I may as well save it.
         end = start + 10
         if end > last:
-            multiplier = -1  # to end while block
+            multiplier = -1  # end while block
             print(f"Dups ({start}:{last}) of {last}:")
             subblock = block[start:]
         else:
@@ -219,18 +219,7 @@ def process_block(block: list[list[str]]) -> None:
                 tmp = block[0][0]
                 block[0][0] = block[start + index_dup][0]
                 block[start + index_dup][0] = tmp
-            # show this sub block again, with the updated info
-            if multiplier > 0:
-                multiplier -= 1
-            else:  # it's the last sub-block
-                multiplier = 0
         elif ans == "4":  # Remove SOME duplicates in sub block
-            # this option means showing the sub block again
-            if multiplier > 0:
-                multiplier -= 1
-            else:  # it's the last sub-block
-                multiplier = 0
-
             indexes = menu_select_dups(subblock, True)
             if indexes == "CANCEL":
                 continue
@@ -248,8 +237,8 @@ def process_block(block: list[list[str]]) -> None:
             elif ans == "2":  # move to trash
                 block = exec_delete(block, indexes)
                 last = len(block) - 1
-            elif ans == "3":  # cancel
-                continue
+            # elif ans == "3":  # cancel
+            #    pass  # do nothing to show this sub block again
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
@@ -258,13 +247,8 @@ def process_block(block: list[list[str]]) -> None:
             elif ans == "2":  # move to trash
                 exec_delete(block[1:])
                 break  # exit loop, load next block
-            elif ans == "3":  # cancel
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
-                continue
+            # elif ans == "3":  # cancel
+            #    pass  # do nothing to show this sub block again
         elif ans == "6":  # Remove original and ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
@@ -273,16 +257,16 @@ def process_block(block: list[list[str]]) -> None:
             elif ans == "2":  # move to trash
                 exec_delete(block)
                 break  # exit loop, load next block
-            elif ans == "3":  # cancel
-                # show this sub block again
-                if multiplier > 0:
-                    multiplier -= 1
-                else:  # it's the last sub-block
-                    multiplier = 0
-                continue
+            # elif ans == "3":  # cancel
+            #    pass  # do nothing to show this sub block again
         elif ans == "7":  # Exit
             sys.exit()
 
+        # show this sub block again
+        if multiplier > 0:
+            multiplier -= 1
+        else:  # it's the last sub-block
+            multiplier = 0
 
 def set_env() -> tuple[str, ...]:
     """
