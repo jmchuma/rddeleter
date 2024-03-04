@@ -39,7 +39,7 @@ def main():
             process_block(block)
 
 
-def exec_delete(dups, indexes=(), method="trash"):
+def exec_delete(dups: list[list[str]], indexes: list[int] = (), method: str = "trash") -> list[list[str]]:
     """Delete files using the given method.
 
     :param dups: list of duplicates to delete.
@@ -70,7 +70,7 @@ def exec_delete(dups, indexes=(), method="trash"):
     return dups
 
 
-def menu_delete():
+def menu_delete() -> str:
     """Ask how to delete files.
 
     :return: a str with the selected option.
@@ -88,13 +88,13 @@ def menu_delete():
             print("Valid options are 1, 2, or 3.")
 
 
-def menu_listdups():
+def menu_listdups() -> str:
     """
     Displays main menu.
     :return: the user selection
     """
     while True:
-        print("Whaddaya wanna do?")
+        print("Choose an option:")
         print("[1] Display next sub block")
         print("[2] Display next block")
         print("[3] Swap main file with a duplicate in sub block")
@@ -110,7 +110,7 @@ def menu_listdups():
             print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
 
 
-def menu_select_dups(dups, multi=False):
+def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[str]:
     """Displays a menu with action to select duplicates.
 
     :param dups: a list of duplicates. Each element if a list with information
@@ -184,7 +184,7 @@ def menu_select_dups(dups, multi=False):
                 print(f"Valid options are {valid}.")
 
 
-def process_block(block):
+def process_block(block: list[list[str]]) -> None:
     """
     Processes a block of duplicates.
 
@@ -308,7 +308,7 @@ def process_block(block):
             sys.exit()
 
 
-def set_env():
+def set_env() -> tuple[str, ...]:
     """
     Sets the environment well be working on.
 
