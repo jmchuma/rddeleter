@@ -39,33 +39,23 @@ def main():
             process_block(block)
 
 
-def exec_delete(dups: list[list[str]], indexes: list[int] = (), method: str = "trash") -> list[list[str]]:
+def exec_delete(dups: list[list[str]], indexes: list[int] = (), cmd: str = "trash") -> list[list[str]]:
     """Delete files using the given method.
 
     :param dups: list of duplicates to delete.
     :param indexes: the indexes from dups that should be deleted. If empty,
     deletes all files in dups.
-    :param method: the method to delete files. Possible values are rm and trash.
+    :param cmd: the method to delete files. Possible values are rm and trash.
     :return: a list of the remaining files.
     """
     if indexes:  # delete some
-        if method == "rm":
-            for i in indexes:
-                print(f"rm {dups[int(i)][7]}")
-                dups.pop(int(i))
-        else:  # trash
-            for i in indexes:
-                print(f"trash {dups[int(i)][7]}")
-                dups.pop(int(i))
+        for i in indexes:
+            print(f"{cmd} {dups[int(i)][7]}")
+            dups.pop(int(i))
     else: # delete all
-        if method == "rm":
-            for line in dups:
-                print(f"rm {line[7]}")
-                dups.remove(line)
-        else:  # trash
-            for line in dups:
-                print(f"trash {line[7]}")
-                dups.remove(line)
+        for line in dups:
+            print(f"{cmd} {line[7]}")
+            dups.remove(line)
 
     return dups
 
@@ -277,7 +267,7 @@ def process_block(block: list[list[str]]) -> None:
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
-                exec_delete(block[1:], method="rm")
+                exec_delete(block[1:], cmd="rm")
                 break  # exit loop, load next block
             elif ans == "2":  # move to trash
                 exec_delete(block[1:])
@@ -292,7 +282,7 @@ def process_block(block: list[list[str]]) -> None:
         elif ans == "6":  # Remove original and ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
-                exec_delete(block, method="rm")
+                exec_delete(block, cmd="rm")
                 break  # exit loop, load next block
             elif ans == "2":  # move to trash
                 exec_delete(block)
