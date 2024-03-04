@@ -39,7 +39,7 @@ def main():
             process_block(block)
 
 
-def exec_delete(dups: list[list[str]], indexes: list[int] = (), cmd: str = "trash") -> list[list[str]]:
+def exec_delete(dups: list[list[str]], indexes: tuple[str, ...] = (), cmd: str = "trash") -> list[list[str]]:
     """Delete files using the given method.
 
     :param dups: list of duplicates to delete.
@@ -100,7 +100,7 @@ def menu_listdups() -> str:
             print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
 
 
-def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[str]:
+def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[str, ...]:
     """Displays a menu with action to select duplicates.
 
     :param dups: a list of duplicates. Each element if a list with information
@@ -123,17 +123,16 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[s
             if not opts:  # no option selected
                 continue
             # just in case there are repeated options
-            # TODO do I need a list for choices or is a set OK?
-            opts = list(set(opts))
+            opts = set(opts)
 
-            bad_opts = []
+            bad_opts = set()
             for o in opts:
                 if o not in valid:
-                    bad_opts.append(o)
+                    bad_opts.add(o)
 
             if bad_opts:
                 if len(bad_opts) == 1:
-                    print(f"{bad_opts[0]} is not valid option.")
+                    print(f"{bad_opts.pop()} is not valid option.")
                 else:
                     print(f"{bad_opts} are not valid options.")
 
@@ -141,7 +140,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[s
             else:
                 if len(opts) == 1:
                     if "CANCEL" in opts or "ALL" in opts:
-                        return opts[0]
+                        return opts.pop()
                 else:
                     if "CANCEL" in opts:
                         while True:
@@ -164,7 +163,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | list[s
                             else:
                                 print("Enter Yes or No.")
 
-                return opts
+                return tuple(opts)
         else:  # multi == False
             opt = input("Select a file or type CANCEL > ").strip()
             if opt in valid:
@@ -228,7 +227,7 @@ def process_block(block: list[list[str]]) -> None:
             else:
                 # add start to the indexes in the subblock
                 # to delete the right elements
-                indexes = [str(start + int(x)) for x in indexes]
+                indexes = tuple(str(start + int(x)) for x in indexes)
 
             ans = menu_delete()
             if ans == "1":  # delete permanently
