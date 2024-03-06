@@ -29,30 +29,6 @@ def main():
         process_block(block)
 
 
-def exec_delete(dups: list[list[str]], indexes: tuple[int, ...] = (), cmd: str = "trash") -> list[list[str]]:
-    """Delete files using the given method.
-
-    :param dups: list of duplicates to delete.
-    :param indexes: the indexes from dups that should be deleted. If empty,
-    deletes all files in dups.
-    :param cmd: the method to delete files. Possible values are rm and trash.
-    :return: a list of the remaining files.
-    """
-    if indexes:  # delete some
-        # Reversing indexes to delete the higher indexes first.
-        # Avoids deleting the wrong element or getting an IndexError
-        # because a lower index was previously deleted in the loop.
-        for i in sorted(indexes, reverse=True):
-            print(f"{cmd} {dups[i][7]}")
-            del dups[i]
-    else:  # delete all
-        for line in dups:
-            print(f"{cmd} {line[7]}")
-        dups.clear()
-
-    return dups
-
-
 def menu_delete() -> str:
     """Ask how to delete files.
 
@@ -240,30 +216,30 @@ def process_block(block: list[list[str]]) -> None:
 
             ans = menu_delete()
             if ans == "1":  # delete permanently
-                block = exec_delete(block, indexes, "rm")
+                block = core.delete_dups(block, indexes, "rm")
                 last = len(block) - 1
             elif ans == "2":  # move to trash
-                block = exec_delete(block, indexes)
+                block = core.delete_dups(block, indexes)
                 last = len(block) - 1
             # elif ans == "3":  # cancel
             #    pass  # do nothing to show this sub block again
         elif ans == "5":  # Remove ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
-                exec_delete(block[1:], cmd="rm")
+                core.delete_dups(block[1:], cmd="rm")
                 break  # exit loop, load next block
             elif ans == "2":  # move to trash
-                exec_delete(block[1:])
+                core.delete_dups(block[1:])
                 break  # exit loop, load next block
             # elif ans == "3":  # cancel
             #    pass  # do nothing to show this sub block again
         elif ans == "6":  # Remove original and ALL duplicates
             ans = menu_delete()
             if ans == "1":  # delete permanently
-                exec_delete(block, cmd="rm")
+                core.delete_dups(block, cmd="rm")
                 break  # exit loop, load next block
             elif ans == "2":  # move to trash
-                exec_delete(block)
+                core.delete_dups(block)
                 break  # exit loop, load next block
             # elif ans == "3":  # cancel
             #    pass  # do nothing to show this sub block again
