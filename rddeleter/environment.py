@@ -10,7 +10,7 @@ RD_BASEDIR = ""
 RD_RESULTS = ""
 
 
-def set_env(results_path) -> tuple[str, ...]:
+def set_env(results_path: str) -> tuple[str, ...]:
     """Sets the environment well be working on.
 
     To be precise, it sets:

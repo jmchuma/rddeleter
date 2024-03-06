@@ -6,6 +6,7 @@ rdfind_result.txt in the current working directory.
 """
 
 
+import core
 import environment
 import os
 import sys
@@ -18,34 +19,14 @@ def main():
     Reads the content of the rdfind result file, grouping sets of duplicates,
     and feeds them to process_block.
     """
-    if len(sys.argv) > 1:
-        results_path = sys.argv[1]
-    else:
-        print("Enter path to rdfind result file.")
-        print("Leave empty for rdfind_result.txt ")
-        results_path = input(f"in {os.getcwd()} > ").strip()
-
-        if not results_path:
-            results_path = f"{os.getcwd()}/rdfind_result.txt"
-
+    results_path = menu_result_file()
     environment.set_env(results_path)
 
-    with open(environment.RD_RESULTS, "r") as file_in:
-        block = []
-
-        for line in file_in:
-            line = line.lstrip()
-            if line.startswith("#") or not line:
-                continue
-
-            line = line.split()
-            if line[0] == "DUPTYPE_FIRST_OCCURRENCE" and len(block) != 0:
-                process_block(block)
-                block = []
-
-            block.append(line)
-        else:  # EOF
-            process_block(block)
+    while True:
+        block = core.load_next_block()
+        if not block:
+            break
+        process_block(block)
 
 
 def exec_delete(dups: list[list[str]], indexes: tuple[int, ...] = (), cmd: str = "trash") -> list[list[str]]:
@@ -110,6 +91,20 @@ def menu_listdups() -> str:
         else:
             print(f"{ans} is not a valid option.")
             print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
+
+
+def menu_result_file() -> str:
+    if len(sys.argv) > 1:
+        results_path = sys.argv[1]
+    else:
+        print("Enter path to rdfind result file.")
+        print("Leave empty for rdfind_result.txt")
+        results_path = input(f"in {os.getcwd()} > ").strip()
+
+        if not results_path:
+            results_path = f"{os.getcwd()}/rdfind_result.txt"
+
+    return results_path
 
 
 def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[str, ...]:
