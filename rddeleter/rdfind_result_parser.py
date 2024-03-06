@@ -1,14 +1,13 @@
 """Parses rdfind result file.
 
-Arguments [directory] [result_file]
-If directory is not provided it assumes the current working directory as the
-base working.
-If result_file is not provided it ask for it and if it's not provided assumes
-rdfind_result.txt in the base directory.
+Arguments [result_file]
+If result_file is not provided it asks for it and if it's not provided assumes
+rdfind_result.txt in the current working directory.
 """
 
 
 import environment
+import os
 import sys
 
 
@@ -19,7 +18,17 @@ def main():
     Reads the content of the rdfind result file, grouping sets of duplicates,
     and feeds them to process_block.
     """
-    environment.set_env()
+    if len(sys.argv) > 1:
+        results_path = sys.argv[1]
+    else:
+        print("Enter path to rdfind result file.")
+        print("Leave empty for rdfind_result.txt ")
+        results_path = input(f"in {os.getcwd()} > ").strip()
+
+        if not results_path:
+            results_path = f"{os.getcwd()}/rdfind_result.txt"
+
+    environment.set_env(results_path)
 
     with open(environment.RD_RESULTS, "r") as file_in:
         block = []
@@ -118,6 +127,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
         valid.append("ALL")
 
     while True:
+        print(f"Paths relative to: {environment.RD_BASEDIR}")
         for index, dup in enumerate(dups):
             print(f"[{index}] {dup[7]}")
 
@@ -187,6 +197,7 @@ def process_block(block: list[list[str]]) -> None:
     multiplier = 0  # to control the sub block we are in
     last = len(block) - 1
     while multiplier >= 0:
+        print(f"Paths relative to: {environment.RD_BASEDIR}")
         print(f"Main:\n    [0] {block[0][7]}")
 
         start = 10 * multiplier + 1
