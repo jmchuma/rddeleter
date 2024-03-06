@@ -21,7 +21,7 @@ def main():
     """
     environment.set_env()
 
-    with open(environment.RDFIND_RESULTS, "r") as file_in:
+    with open(environment.RD_RESULTS, "r") as file_in:
         block = []
 
         for line in file_in:
