@@ -6,7 +6,7 @@
 import environment
 
 
-current_line = 0
+current_line = 1  # file lines start at 1
 
 
 def delete_dups(dups: list[list[str]], indexes: tuple[int, ...] = (), cmd: str = "trash") -> list[list[str]]:
@@ -40,14 +40,15 @@ def load_next_block() -> list[list[str]]:
     as a list of lists of strs.
     """
 
+    block = []
+    global current_line
+
     with open(environment.RD_RESULTS, "r") as file_in:
-        block = []
-        global current_line
+        # skip to current_line
+        for _ in range(current_line - 1):
+            next(file_in)
 
-        for pos, line in enumerate(file_in):
-            if pos < current_line:
-                continue
-
+        for line in file_in:
             current_line += 1
             line = line.strip()
             if line.startswith("#") or not line:
