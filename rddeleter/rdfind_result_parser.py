@@ -20,15 +20,20 @@ def main():
     and feeds them to process_block.
     """
     while True:
-        results_path  = menu_result_file()
-        environment.set_env(results_path)
+        results_path, exit_requested = menu_result_file()
+        if exit_requested:
+            sys.exit()
 
+        environment.set_env(results_path)
         while True:
             try:
                 block = core.load_next_block()
                 if not block:
                     break
-                process_block(block)
+
+                exit_requested = process_block(block)
+                if exit_requested:
+                    sys.exit()
             except FileNotFoundError:
                 print(f"FILE NOT FOUND: {results_path}")
                 break
@@ -74,7 +79,10 @@ def menu_listdups() -> str:
             print("Valid options are 1, 2, 3, 4, 5, 6, or 7.")
 
 
-def menu_result_file() -> str:
+def menu_result_file() -> (str, bool):
+    results_path = ""
+    exit_requested = False
+
     if len(sys.argv) > 1:
         results_path = sys.argv[1]
     else:
@@ -94,9 +102,9 @@ def menu_result_file() -> str:
             if not results_path:
                 results_path = f"{os.getcwd()}/rdfind_result.txt"
         elif ans == "2":  # Exit
-            sys.exit()
+            exit_requested = True
 
-    return results_path
+    return results_path, exit_requested
 
 
 def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[str, ...]:
@@ -173,13 +181,14 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
                 print(f"Valid options are {valid}.")
 
 
-def process_block(block: list[list[str]]) -> None:
+def process_block(block: list[list[str]]) -> bool:
     """
     Processes a block of duplicates.
 
     :param block: a list of duplicates.
     block[0] is the one considered original by rdfind.
-    :return:
+    :return: boolean value. If true, the uses requested to exit.
+    False otherwise.
     """
     multiplier = 0  # to control the sub block we are in
     last = len(block) - 1
@@ -260,13 +269,15 @@ def process_block(block: list[list[str]]) -> None:
             # elif ans == "3":  # cancel
             #    pass  # do nothing to show this sub block again
         elif ans == "7":  # Exit
-            sys.exit()
+            return True  # exit script
 
         # show this sub block again
         if multiplier > 0:
             multiplier -= 1
         else:  # it's the last sub-block
             multiplier = 0
+
+    return False  # keep the script running
 
 
 if __name__ == "__main__":
