@@ -158,6 +158,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
                                 return "CANCEL"
                             elif ans == "no":
                                 opts.remove("CANCEL")
+                                break
                             else:
                                 print("Enter Yes or No.")
                     if "ALL" in opts:
@@ -168,6 +169,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
                                 return "ALL"
                             elif ans == "no":
                                 opts.remove("ALL")
+                                break
                             else:
                                 print("Enter Yes or No.")
 
