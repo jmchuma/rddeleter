@@ -19,14 +19,19 @@ def main():
     Reads the content of the rdfind result file, grouping sets of duplicates,
     and feeds them to process_block.
     """
-    results_path = menu_result_file()
-    environment.set_env(results_path)
-
     while True:
-        block = core.load_next_block()
-        if not block:
-            break
-        process_block(block)
+        results_path  = menu_result_file()
+        environment.set_env(results_path)
+
+        while True:
+            try:
+                block = core.load_next_block()
+                if not block:
+                    break
+                process_block(block)
+            except FileNotFoundError:
+                print(f"FILE NOT FOUND: {results_path}")
+                break
 
 
 def menu_delete() -> str:
@@ -73,12 +78,23 @@ def menu_result_file() -> str:
     if len(sys.argv) > 1:
         results_path = sys.argv[1]
     else:
-        print("Enter path to rdfind result file.")
-        print("Leave empty for rdfind_result.txt")
-        results_path = input(f"in {os.getcwd()} > ").strip()
+        while True:
+            print("Choose an option:")
+            print("[1] Load result file")
+            print("[2] Exit")
+            ans = input("> ").strip()
+            if ans in ("1", "2"):
+                break
 
-        if not results_path:
-            results_path = f"{os.getcwd()}/rdfind_result.txt"
+        if ans == "1":
+            print("Enter path to rdfind result file.")
+            print("Leave empty for rdfind_result.txt")
+            results_path = input(f"in {os.getcwd()} > ").strip()
+
+            if not results_path:
+                results_path = f"{os.getcwd()}/rdfind_result.txt"
+        elif ans == "2":  # Exit
+            sys.exit()
 
     return results_path
 
