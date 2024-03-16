@@ -116,7 +116,9 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
     :return: a list with the selected options, "ALL", "CANCEL", or, if multi is
     False, a str representing a single selection.
     """
-    valid = [str(x) for x in range(len(dups))]
+    # 1 to len+1 to present the indexes as they were displayed
+    # process_block
+    valid = [str(x) for x in range(1, len(dups)+1)]
     valid.append("CANCEL")
     if multi:
         valid.append("ALL")
@@ -124,7 +126,7 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
     while True:
         print(f"Paths relative to: {environment.RD_BASEDIR}")
         for index, dup in enumerate(dups):
-            print(f"[{index}] {dup[7]}")
+            print(f"[{index + 1}] {dup[7]}")
 
         if multi:
             opts = input("Enter a space separated list of indexes, ALL, or CANCEL > ").strip().split()
@@ -173,7 +175,8 @@ def menu_select_dups(dups: list[list[str]], multi: bool = False) -> str | tuple[
                             else:
                                 print("Enter Yes or No.")
 
-                return tuple(opts)
+                opts = [int(o)-1 for o in opts]
+                return tuple([str(i) for i in opts])
         else:  # multi == False
             opt = input("Select a file or type CANCEL > ").strip()
             if opt in valid:
